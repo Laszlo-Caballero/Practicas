@@ -28,9 +28,9 @@ const personaData: Persona[] = [
   },
   {
     id: 3,
-    name: "Lazlo Caballero Sipiran",
+    name: "Laszlo Caballero Sipiran",
     address: "UPN",
-    email: "lazlogey@hvon.com",
+    email: "laszlogey@hvon.com",
     phone: "987654321",
     birthDate: "2006-01-01",
   },
