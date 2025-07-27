@@ -1,7 +1,10 @@
 import React from "react";
 import CrearPersona from "./crearPersona";
+import { TableProvider } from "@/context/TableContext";
 import { FiPlus } from "react-icons/fi";
 import ButtonModal from "./components/share/button-modal/ButtonModal";
+import { ApiRequest } from "../libs/api";
+import { Response } from "./interfaces/responsefinal.interface";
 interface Persona {
   id: number;
   name: string;
@@ -38,8 +41,13 @@ const personaData: Persona[] = [
   },
 ];
 
-const Personas = () => {
+export default async function Personas() {
+  const data = await ApiRequest<Response<Persona>>({
+    metod: "get",
+    endpoint: `persona`,
+  });
   return (
+     <TableProvider>
     <div className="min-h-screen bg-gray-100 py-10 px-6">
       <div className="bg-white rounded-lg shadow-md p-6 max-w-7xl mx-auto">
         <div className="mb-4">
@@ -113,7 +121,7 @@ const Personas = () => {
         </div>
       </div>
     </div>
+    </TableProvider>
   );
 };
 
-export default Personas;
