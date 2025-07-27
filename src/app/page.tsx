@@ -1,5 +1,7 @@
 import React from "react";
-
+import CrearPersona from "./crearPersona";
+import { FiPlus } from "react-icons/fi";
+import ButtonModal from "./components/share/button-modal/ButtonModal";
 interface Persona {
   id: number;
   name: string;
@@ -55,9 +57,13 @@ const Personas = () => {
             placeholder="Buscar personas..."
             className="text-black border border-gray-300 px-4 py-2 rounded-md w-full sm:w-1/3"
           />
-          <button className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-2">
-            <span className="text-lg">+</span> Agregar Persona
-          </button>
+            <ButtonModal
+           className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-2"  
+           modal={<CrearPersona />}
+        >
+          <FiPlus size={15} />
+          Nueva Persona
+        </ButtonModal>
         </div>
 
         <div className="overflow-x-auto">
