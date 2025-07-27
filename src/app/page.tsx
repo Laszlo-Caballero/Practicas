@@ -4,124 +4,90 @@ import { TableProvider } from "@/context/TableContext";
 import { FiPlus } from "react-icons/fi";
 import ButtonModal from "./components/share/button-modal/ButtonModal";
 import { ApiRequest } from "../libs/api";
-import { Response } from "./interfaces/responsefinal.interface";
-interface Persona {
-  id: number;
-  name: string;
-  address: string;
-  email: string;
-  phone: string;
-  birthDate: string;
-}
-
-const personaData: Persona[] = [
+import ActualizarPersona from "./ActualizarPersona";
+import { LuSquarePen } from "react-icons/lu";
+import { LuTrash2 } from "react-icons/lu";
+import DeleteModal from "./components/share/delete-modal/DeleteModal";
+import ListarPersona from "./listarPersona";
+import Tabs from "../app/components/ui/tabs/Tabs";
+import { Response, Persona } from "./interfaces/responsefinal.interface";
+const dataStatic: Persona[] = [
   {
-    id: 1,
-    name: "Juan García López",
-    address: "Calle Principal 123",
-    email: "juan.garcia@email.com",
-    phone: "123456789",
-    birthDate: "1990-05-15",
+    idPersona: 1,
+    nombre: "Juan Pérez",
+    direccion: "Av. Los Olivos 123, Lima",
+    correo: "juan.perez@example.com",
+    telefono: "+51 987 654 321",
+    fechaNacimiento: "1990-05-12",
   },
   {
-    id: 2,
-    name: "María Rodríguez Martínez",
-    address: "Avenida Central 456",
-    email: "maria.rodriguez@email.com",
-    phone: "966654321",
-    birthDate: "1985-08-22",
+    idPersona: 2,
+    nombre: "María Rodríguez",
+    direccion: "Jr. San Martín 456, Arequipa",
+    correo: "maria.rodriguez@example.com",
+    telefono: "+51 912 345 678",
+    fechaNacimiento: "1985-09-25",
   },
   {
-    id: 3,
-    name: "Laszlo Caballero Sipiran",
-    address: "UPN",
-    email: "laszlogey@hvon.com",
-    phone: "987654321",
-    birthDate: "2006-01-01",
+    idPersona: 3,
+    nombre: "Carlos Fernández",
+    direccion: "Calle Lima 789, Trujillo",
+    correo: "carlos.fernandez@example.com",
+    telefono: "+51 999 888 777",
+    fechaNacimiento: "1992-03-18",
+  },
+  {
+    idPersona: 4,
+    nombre: "Ana López",
+    direccion: "Av. Principal 321, Cusco",
+    correo: "ana.lopez@example.com",
+    telefono: "+51 922 334 556",
+    fechaNacimiento: "1995-12-02",
+  },
+  {
+    idPersona: 5,
+    nombre: "Pedro Sánchez",
+    direccion: "Jr. Los Cedros 654, Piura",
+    correo: "pedro.sanchez@example.com",
+    telefono: "+51 933 221 110",
+    fechaNacimiento: "1988-07-30",
   },
 ];
 
 export default async function Personas() {
-  const data = await ApiRequest<Response<Persona>>({
+  const data = await ApiRequest<Persona[]>({
     metod: "get",
-    endpoint: `persona`,
+    endpoint: "persona",
   });
-  return (
-     <TableProvider>
-    <div className="min-h-screen bg-gray-100 py-10 px-6">
+return (
+  <TableProvider>
+    <div className="min-h-screen bg-gray-100 py-2 px-6">
       <div className="bg-white rounded-lg shadow-md p-6 max-w-7xl mx-auto">
-        <div className="mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Gestión de Personas
-          </h1>
-          <p className="text-sm text-gray-600">
-            Administra la información de las personas en el sistema
-          </p>
-        </div>
+        <div className="flex justify-between items-start mb-4">
+          <div className="mb-4">
+            <h1 className="text-2xl font-bold text-gray-800">
+              Gestión de Personas
+            </h1>
+            <p className="text-sm text-gray-600">
+              Administra la información de las personas en el sistema
+            </p>
+          </div>
 
-        <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
-          <input
-            type="text"
-            placeholder="Buscar personas..."
-            className="text-black border border-gray-300 px-4 py-2 rounded-md w-full sm:w-1/3"
-          />
+          <div className="flex justify-end items-center mb-4 flex-wrap gap-2">
             <ButtonModal
-           className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-2"  
-           modal={<CrearPersona />}
-        >
-          <FiPlus size={15} />
-          Nueva Persona
-        </ButtonModal>
+              className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-2"
+              modal={<CrearPersona />}
+            >
+              <FiPlus size={30} />
+              Nueva Persona
+            </ButtonModal>
+          </div>
         </div>
-
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white text-sm">
-            <thead className="bg-gray-100 text-gray-600">
-              <tr>
-                <th className="text-left px-4 py-2">ID</th>
-                <th className="text-left px-4 py-2">Nombre Completo</th>
-                <th className="text-left px-4 py-2">Email</th>
-                <th className="text-left px-4 py-2">Teléfono</th>
-                <th className="text-left px-4 py-2">Fecha Nacimiento</th>
-                <th className="text-left px-4 py-2">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-800">
-              {personaData.map((person) => (
-                <tr key={person.id} className="border-t">
-                  <td className="px-4 py-2">{person.id}</td>
-                  <td className="px-4 py-2">
-                    <div className="font-semibold">{person.name}</div>
-                    <div className="text-gray-500 text-sm">
-                      {person.address}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">{person.email}</td>
-                  <td className="px-4 py-2">{person.phone}</td>
-                  <td className="px-4 py-2">{person.birthDate}</td>
-                  <td className="px-4 py-2 flex gap-2">
-                    <button className="bg-gray-100 hover:bg-gray-200 p-2 rounded">
-                      ✏️
-                    </button>
-                    <button className="bg-gray-100 hover:bg-gray-200 p-2 rounded">
-                      🗑️
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="mt-4 text-sm text-gray-600 flex justify-between flex-wrap gap-2">
-          <span>
-            Mostrando {personaData.length} de {personaData.length} personas
-          </span>
-          <span>Total de registros: {personaData.length}</span>
-        </div>
+        <ListarPersona data={dataStatic} />
       </div>
     </div>
-    </TableProvider>
-  );
+  </TableProvider>
+);
+
 };
 
