@@ -20,6 +20,48 @@ import { toast } from "sonner";
 import Load from "./components/share/load/Load";
 import { useQuery } from "../hooks/useQuery";
 import { useEffect } from "react";
+const dataStatic: Persona[] = [
+  {
+    idPersona: 1,
+    nombre: "Juan Pérez",
+    direccion: "Av. Los Olivos 123, Lima",
+    correo: "juan.perez@example.com",
+    telefono: "987654321",
+    fechaNacimiento: "1990-05-12",
+  },
+  {
+    idPersona: 2,
+    nombre: "María Rodríguez",
+    direccion: "Jr. San Martín 456, Arequipa",
+    correo: "maria.rodriguez@example.com",
+    telefono: "912345678",
+    fechaNacimiento: "1985-09-25",
+  },
+  {
+    idPersona: 3,
+    nombre: "Carlos Fernández",
+    direccion: "Calle Lima 789, Trujillo",
+    correo: "carlos.fernandez@example.com",
+    telefono: "999888777",
+    fechaNacimiento: "1992-03-18",
+  },
+  {
+    idPersona: 4,
+    nombre: "Ana López",
+    direccion: "Av. Principal 321, Cusco",
+    correo: "ana.lopez@example.com",
+    telefono: "922334556",
+    fechaNacimiento: "1995-12-02",
+  },
+  {
+    idPersona: 5,
+    nombre: "Pedro Sánchez",
+    direccion: "Jr. Los Cedros 654, Piura",
+    correo: "pedro.sanchez@example.com",
+    telefono: "933221110",
+    fechaNacimiento: "1988-07-30",
+  },
+];
 interface ActualizarPersonaProps extends ModalProps {
   id: number;
 }
@@ -28,6 +70,8 @@ export default function ActualizarPersona({
   onClose,
   id,
 }: ActualizarPersonaProps) {
+  const persona = dataStatic.find((p) => p.idPersona === id);
+
   const {
     register,
     formState: { errors },
@@ -37,79 +81,37 @@ export default function ActualizarPersona({
     resolver: zodResolver(PersonaSchema),
   });
 
-  const { refresh } = useTableContext<Persona>()
-
-  const { mutate, isLoading } = useMutation<
-    z.infer<typeof PersonaSchema>,
-    Response<Persona[]>
-  >({
-    mutationFn: async (data, url, token) => {
-      const response = await axios.post(
-        `${url}/personas/${id}`,
-        {
-          nombre: data.nombre,
-          correo: data.correo,
-          direccion: data.direccion,
-          telefono: data.telefono,
-          fechaNacimiento: data.fechaNacimiento,
-
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      return response.data;
-    },
-    onSuccess: (data) => {
-      toast.success("Persona registrada exitosamente");
-      refresh(data.data);
-      onClose?.();
-    },
-    onError: () => {
-      toast.error(
-        "Error al registrar la persona. Por favor, intenta nuevamente."
-      );
-    },
-  });
-
-   const { data, isLoading: isLoadingQuery } = useQuery<Response<Persona>>({
-    queryFn: async (url, token) => {
-      const response = await axios.get(`${url}/persona/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    },
-  });
-
   useEffect(() => {
-    if (data) {
-      const personaData = data.data;
-      setValue("nombre", personaData.nombre);
-      setValue("correo", personaData.correo);
-      setValue("direccion", personaData.direccion);
-      setValue("telefono", personaData.telefono);
-      setValue("fechaNacimiento", personaData.fechaNacimiento);
+    if (persona) {
+      setValue("nombre", persona.nombre);
+      setValue("correo", persona.correo);
+      setValue("direccion", persona.direccion);
+      setValue("telefono", persona.telefono);
+      setValue("fechaNacimiento", persona.fechaNacimiento);
     }
-  }, [data, setValue]);
+  }, [persona, setValue]);
+
+  const onSubmit = (data: z.infer<typeof PersonaSchema>) => {
+    console.log("Datos actualizados (simulado):", data);
+    toast.success("Persona actualizada (simulación)");
+    onClose?.();
+  };
 
   return (
     <form
-     onSubmit={handleSubmit(mutate)}
+      onSubmit={handleSubmit(onSubmit)}
       className="w-full max-w-sm md:max-w-3xl bg-white p-6 rounded-xl shadow-lg flex flex-col gap-6 dark:bg-gray-800 border dark:border-gray-700"
     >
-       {(isLoading || isLoadingQuery) && <Load />}
       <header className="flex items-center gap-x-3">
-       <LuUsers size={40} className="text-black-600 dark:text-blue-400" />
+        <LuUsers size={40} className="text-black-600 dark:text-blue-400" />
         <div className="flex flex-col">
-          <p className="text-xl font-semibold dark:text-white">Registrar Nueva Persona</p>
+          <p className="text-xl font-semibold dark:text-white">Actualizar Persona</p>
           <p className="text-sm text-gray-500">
-            Completa los datos para agregar una persona al sistema
+            Modifica los datos de la persona
           </p>
         </div>
       </header>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
           label="Nombre Completo"
@@ -149,6 +151,7 @@ export default function ActualizarPersona({
           error={errors.fechaNacimiento?.message}
         />
       </div>
+
       <div className="flex justify-end gap-x-4">
         <Button
           type="button"
@@ -158,7 +161,7 @@ export default function ActualizarPersona({
           Cancelar
         </Button>
         <Button className="flex items-center gap-x-3 mt-4 bg-black text-white py-3 font-semibold hover:bg-black">
-          Agregar Persona
+          Guardar Cambios
         </Button>
       </div>
     </form>
