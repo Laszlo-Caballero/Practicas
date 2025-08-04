@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@theme {
+  --color-sp-green: #1db954;
+  --color-sp-slate: #212121;
+  --color-sp-black: #121212;
+  --color-sp-gray: #535353;
+  --color-sp-light-gray: #b3b3b3;
+}
